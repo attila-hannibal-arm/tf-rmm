@@ -223,6 +223,13 @@ Run unittests for a specific test group(s) (e.g. unittests whose group starts wi
     cmake --build ${RMM_BUILD_DIR} -- build -j
     ${RMM_BUILD_DIR}/Debug/rmm_core.elf -gxlat -v -r${NUMBER_OF_TEST_ITERATIONS}
 
+Run unittests with Valgrind support (to check for memory leaks and memory related errors)
+
+.. code-block:: bash
+
+    cmake -DRMM_CONFIG=host_defcfg -DHOST_VARIANT=host_test -DCPPUTEST_MEM_LEAK_DETECTION_DISABLED=ON -DCMAKE_BUILD_TYPE=Debug -S ${RMM_SOURCE_DIR} -B ${RMM_BUILD_DIR}
+    cmake --build ${RMM_BUILD_DIR} -- run-unittests-memcheck
+
 17. Generate Coverage Report.
 
 It is possible to generate a coverage report for a last execution of the host

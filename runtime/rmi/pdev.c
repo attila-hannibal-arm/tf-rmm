@@ -446,6 +446,7 @@ static void pdev_create_continue_ep(unsigned long fid, struct smc_result *res)
 	bdf = sro_ctx->pdev_id;
 
 	/* Call init routine to initialize device class specific state */
+	(void)memset(&dparams, 0, sizeof(dparams));
 	dparams.dev_handle = (void *)pd;
 	dparams.rmi_hash_algo = sro_ctx->hash_algo;
 	dparams.cert_slot_id = (uint8_t)sro_ctx->id_index;

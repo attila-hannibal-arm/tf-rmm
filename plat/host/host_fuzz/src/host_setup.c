@@ -429,7 +429,7 @@ size_t readCorpus(int argc, char *argv[], unsigned char *buffer)
 void app_reset(void)
 {
 
-	app_processes_cleanup();
+	app_processes_cleanup(false);
 	attest_reset_app_state();
 	random_reset_app_state();
 	arch_reset_entropy();
@@ -1063,7 +1063,7 @@ int main(int argc, char *argv[])
 	 * calls execute(), so its app processes would sit idle forever.
 	 * Each AFL child will re-spawn fresh app processes via app_reset().
 	 */
-	app_processes_cleanup();
+	app_processes_cleanup(false);
 
 	__AFL_INIT();
 	app_reset();
@@ -1091,7 +1091,7 @@ int main(int argc, char *argv[])
 #endif
 
 	VERBOSE("RMM: Fake Host execution completed\n");
-	app_processes_cleanup();
+	app_processes_cleanup(true);
 
 	return 0;
 }

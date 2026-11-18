@@ -36,5 +36,9 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build -- run-unittests
 
+    - name: run-unittests-memcheck
+      # Run unit tests with Valgrind
+      run: cmake --build ${{github.workspace}}/build -- run-unittests-memcheck
+
     - name: run-coverage
       run: cmake --build ${{github.workspace}}/build -- run-coverage

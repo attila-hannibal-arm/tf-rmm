@@ -63,6 +63,9 @@ if(RMM_UNITTESTS)
                    ${CMAKE_BINARY_DIR}/plat/host/host_test/src/test_groups.h
                    @ONLY)
 
+    set(CPPUTEST_MEM_LEAK_DETECTION_DISABLED ON CACHE BOOL "Disable CppUTest memory leak detection")
+    set(MEMORYCHECK_COMMAND_OPTIONS "--leak-check=full")
+
     # Include CTest for unittests
     include(CTest)
 
@@ -77,6 +80,20 @@ if(RMM_UNITTESTS)
 
     # Stage the app ELFs and SPDM responder before CTest starts.
     add_dependencies(run-unittests
+        rmm-attestation-app
+        rmm-random-app
+        rmm-dev-assign-app
+        stage-spdm-emu)
+
+    # Custom target to run the unit tests with Valgrind
+    add_custom_target(run-unittests-memcheck
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+        COMMAND ctest "${CMAKE_CTEST_ARGUMENTS}" -T memcheck -C "$<CONFIG>"
+        DEPENDS rmm_core.elf rmm_core.map
+    )
+
+    # Stage the app ELFs and SPDM responder before CTest starts.
+    add_dependencies(run-unittests-memcheck
         rmm-attestation-app
         rmm-random-app
         rmm-dev-assign-app

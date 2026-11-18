@@ -249,7 +249,7 @@ void app_framework_setup(void)
 	srand(time(NULL));
 }
 
-void app_processes_cleanup(void)
+void app_processes_cleanup(bool release_app_paths)
 {
 	for (size_t i = 0; i < initialised_app_process_data_count; i++) {
 		/*
@@ -266,6 +266,19 @@ void app_processes_cleanup(void)
 
 	/* The app processes no longer own any persistent or transient heaps. */
 	free_all_tracked_heaps();
+
+	/* Retain paths across fuzz resets; release them only at shutdown. */
+	if (release_app_paths) {
+		for (unsigned long i = 0UL; i < APP_COUNT; i++) {
+			struct app_header *app_header;
+			int ret = app_get_header_ptr_at_index(i, &app_header);
+
+			assert(ret == 0);
+			(void)ret;
+			free(app_header->app_elf_name);
+			app_header->app_elf_name = NULL;
+		}
+	}
 }
 
 int app_new_instance(struct app_data_cfg *app_data,
@@ -302,6 +315,7 @@ int app_new_instance(struct app_data_cfg *app_data,
 		sizeof(app_data->inst_id));
 	READ_OR_EXIT(app_process_data->fd_app_process_to_rmm, &heap_size, sizeof(heap_size));
 	app_data->el2_shared_page = NULL;
+	app_data->exit_flag = 0U;
 	app_data->app_id = app_id;
 	app_data->app_heap = calloc(1U, heap_size);
 	app_data->heap_size = heap_size;

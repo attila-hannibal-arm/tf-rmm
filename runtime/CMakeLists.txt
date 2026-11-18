@@ -7,6 +7,12 @@ include(ArmTargetLinkerScript)
 
 add_executable(rmm-runtime)
 
+if(RMM_ARCH STREQUAL "fake_host" AND CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    # Keep the 64 KiB-aligned BSS in the file-backed RW load segment so
+    # Valgrind 3.22 can load debug information. Apply to existing builds too.
+    target_link_options(rmm-runtime PRIVATE "-Wl,-z,max-page-size=0x10000")
+endif()
+
 target_link_options(rmm-runtime
     PRIVATE "-Wl,-Map=$<TARGET_FILE:rmm-runtime>.map")
 

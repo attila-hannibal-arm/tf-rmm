@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	result = CommandLineTestRunner::RunAllTests(argc, argv);
 	host_util_stop_spdm_responder();
 	test_smmu_stop();
-	app_processes_cleanup();
+	app_processes_cleanup(true);
 
 	return result;
 }

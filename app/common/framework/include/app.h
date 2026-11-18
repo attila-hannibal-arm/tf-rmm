@@ -12,6 +12,7 @@
 #define APP_VA_START	(UL(0xffffffffffffffff) - XLAT_HIGH_VA_SIZE + 1U)
 
 #ifndef __ASSEMBLER__
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -52,11 +53,14 @@ void app_framework_setup(void);
  * and reset the internal process tracking state. After this call, subsequent
  * app_new_instance() calls will fork fresh child processes.
  *
+ * Set release_app_paths only at final shutdown to free registered ELF paths.
+ * Otherwise paths are retained so app processes can restart.
+ *
  * This is intended for use in fuzz harness reset() to prevent pipe protocol
  * corruption that occurs when AFL kills a forkserver child mid-pipe-operation,
  * leaving the long-lived app processes in an inconsistent state.
  */
-void app_processes_cleanup(void);
+void app_processes_cleanup(bool release_app_paths);
 
 /*
  * Function to calculate the number of per instance granules that are used by

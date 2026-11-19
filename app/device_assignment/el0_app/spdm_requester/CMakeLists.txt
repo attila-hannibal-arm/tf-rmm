@@ -75,7 +75,7 @@ endif()
 
 # Disable -Wstrict-overflow for libspdm and strip sanitizer flags
 set(BACKUP_C_FLAGS "${CMAKE_C_FLAGS}")
-string(REPLACE "-Wstrict-overflow" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
+string(REPLACE "-Wstrict-overflow" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 strip_sanitizer_flags()
 
 # Add all source directories

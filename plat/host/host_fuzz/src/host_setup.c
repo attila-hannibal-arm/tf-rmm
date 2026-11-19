@@ -32,7 +32,9 @@
 #include <unistd.h>
 
 /* LLVM/GCC gcov runtime: flush .gcda files */
+#ifdef RMM_FUZZ_COVERAGE
 extern void __gcov_dump(void);
+#endif
 
 /* Create a simple 4 level (Lvl 0 - LvL 3) RTT structure */
 #define RTT_COUNT 4
@@ -1054,7 +1056,9 @@ int main(int argc, char *argv[])
 	 * never exits cleanly, so its gcov counters would be lost without
 	 * an explicit dump here.
 	 */
+#ifdef RMM_FUZZ_COVERAGE
 	__gcov_dump();
+#endif
 #ifdef PERSISTENT_MODE
 
 	/*
@@ -1091,6 +1095,11 @@ int main(int argc, char *argv[])
 #endif
 
 	VERBOSE("RMM: Fake Host execution completed\n");
+	/* The final scenario may leave the realm coroutine suspended. */
+	if (g_fuzz_realm_coro != NULL) {
+		mco_destroy(g_fuzz_realm_coro);
+		g_fuzz_realm_coro = NULL;
+	}
 	app_processes_cleanup(true);
 
 	return 0;

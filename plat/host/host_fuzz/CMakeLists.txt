@@ -5,10 +5,16 @@
 
 add_library(rmm-plat-host_fuzz)
 
+if(RMM_COVERAGE)
+    target_compile_definitions(rmm-plat-host_fuzz PRIVATE RMM_FUZZ_COVERAGE)
+endif()
+
 target_link_libraries(rmm-plat-host_fuzz
     PRIVATE rmm-lib
             rmm-el2-stub
             rmm-host-harness)
+
+target_compile_definitions(rmm-plat-host_fuzz PRIVATE MCO_USE_VALGRIND)
 
 target_sources(rmm-plat-host_fuzz
     PRIVATE "src/host_setup.c"

@@ -26,7 +26,7 @@ Git_Apply_Patches(${T_COSE_SOURCE_DIR} "${T_COSE_PATCH_FILES}")
 #      a released version.
 
 # Avoid strict-aliasing for external repository t_cose
-string(REPLACE "-Wstrict-aliasing=1" "" CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
+string(REPLACE "-Wstrict-aliasing=1" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 
 target_compile_options(t_cose
     PRIVATE

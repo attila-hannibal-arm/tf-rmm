@@ -1,0 +1,21 @@
+services:
+  rmm-builder:
+    build: .
+    user: ${UID}:${GID}
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      RMM_BUILD_DIR: /workspace/rmm-build
+      FUZZ_DURATION_SECONDS: ${FUZZ_DURATION_SECONDS:-1000}
+      FUZZ_VALGRIND_TIMEOUT_MS: ${FUZZ_VALGRIND_TIMEOUT_MS:-10000}
+    volumes:
+      - ../..:/workspace/tf-rmm:rw
+      - type: bind
+        source: ${RMM_BUILD_DIR:?Set RMM_BUILD_DIR to the host build directory}
+        target: /workspace/rmm-build
+      - /mnt/aflout:/mnt/aflout:rw
+      - pipcache:/workspace/.cache/pip:rw
+    network_mode: host
+volumes:
+  pipcache:

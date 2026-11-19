@@ -12,3 +12,4 @@ out
 *.swp
 __pycache__
 fuzzer_protocol.h
+.env

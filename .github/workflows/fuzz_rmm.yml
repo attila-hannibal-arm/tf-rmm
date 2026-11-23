@@ -64,9 +64,3 @@ jobs:
 
       - name: 'Summary'
         run: cat _Fuzz/summary.txt | tail -4 | head -3
-
-      - name: 'Archive results'
-        uses: actions/upload-artifact@v4
-        with:
-          name: fuzz-results
-          path: _Fuzz
